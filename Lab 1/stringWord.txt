@@ -1,0 +1,28 @@
+Develop a smart contract with the following requirements:
+
+- has a string variable namely word
+- at start word = "Hello Professor"
+- create a function that reads word variable
+- create a function that changes the input of word
+
+ANSWER
+
+pragma solidity >=0.4.0 <0.6.0;
+
+contract readWordSM {
+
+string word;
+
+constructor() public {
+    word = "Hello Professor";
+}
+
+function changeWord(string memory _word) public {
+   word = _word;
+}
+
+function readWord() public view returns(string memory) {
+   return word; 
+}
+
+}

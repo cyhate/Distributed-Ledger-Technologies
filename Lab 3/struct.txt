@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: Unlicense
+
+pragma solidity >=0.6.0 <=0.8.0;
+
+
+contract structActivity {
+    
+    struct Book {
+        uint256 bookid;
+        string title;
+        string author;
+    }
+    
+Book[] public vivlio;
+
+function setBook(uint256 _bookid, string memory _title, string memory _author ) public {
+    Book memory newBook  = Book(_bookid, _title, _author);
+    vivlio.push(newBook);
+}
+
+function searchBook(uint256 _bookid) public view returns(uint256, string memory, string memory){
+    uint index;
+    for (uint i=0; i<=vivlio.length-1; i++){
+            if (_bookid == vivlio[i].bookid ){
+                index=i;
+            }
+        }
+    return (vivlio[index].bookid, vivlio[index].title, vivlio[index].author);
+    } 
+
+   
+}

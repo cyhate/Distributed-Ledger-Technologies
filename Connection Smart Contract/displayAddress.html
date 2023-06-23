@@ -1,0 +1,60 @@
+
+<script src="./js/web3.js"></script>
+<script>
+window.addEventListener('load', async () => {
+    // Modern dapp browsers...
+    if (window.ethereum) {
+        window.web3 = new Web3(web3.currentProvider);
+        try {
+            // Request account access if needed
+            await ethereum.enable();
+            // Acccounts now exposed
+		
+         checkMetamaskLogin(); // check if login with metamask
+        } catch (error) {
+            // User denied account access...
+        }
+    }
+    // Non-dapp browsers...
+    else {
+        alert("In order to use the dApp\nPlease Install Metamask")
+        // 
+    }
+});
+
+
+// check if logged into metamask
+
+function checkMetamaskLogin () {
+
+   web3.eth.getAccounts(function(err, accounts) { address = accounts.toString(); 
+
+   if (address.length ===0) {
+    // MetaMask is locked or the user has not connected any accounts
+    alert('Please connect to MetaMask.')
+    } else {
+    
+	web3.eth.getAccounts(function(err, accounts) { console.log(accounts); address = accounts.toString(); });
+	document.getElementById("showAddress").innerHTML = address;
+    
+}	
+
+})
+
+}
+
+</script>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="font-family:Verdana;color:#aaaaaa;">
+<div style="background-color:#e5e5e5;padding:15px;text-align:center;">
+<h1 id="header1">Simple dApp</h1>
+<p>Your address</p>
+<p id="showAddress" class="a"></p>
+<p id="footer" style="color: navy;font-size:12px;">&copy; Copyright Andreas </p>
+</div>
+</body>
+</html>

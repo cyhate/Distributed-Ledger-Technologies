@@ -1,0 +1,69 @@
+<script src="./js/web3.js"></script>
+<script>
+
+window.addEventListener('load', async () => {
+	
+	if (window.ethereum) {
+	window.web3 = new Web3(web3.currentProvider);
+		try {
+            // Request account access if needed
+            await ethereum.enable();
+            // Acccounts now exposed
+		
+         getAccount(); // check if login with metamask
+        } catch (error) {
+            // User denied account access...
+        }
+	} else {
+    alert("In order to use the dApp\nPlease Install Metamask")
+    }
+
+
+});
+
+function getAccount() {
+
+var address;
+
+web3.eth.getAccounts(function(error,result) {
+
+address = result.toString();
+
+console.log(address);
+
+document.getElementById("showAddress").innerHTML = address;
+
+viewBalance(address);
+
+
+});
+
+
+
+}
+
+function viewBalance(_address) {
+
+web3.eth.getBalance(_address, function(error,result) {
+
+document.getElementById("showBalance").innerHTML = result + ' Ether';
+});
+
+viewBlock();
+
+}
+
+function viewBlock() {
+web3.eth.getBlockNumber(function(error,result) {
+
+document.getElementById("showBlockNumber").innerHTML = result ;
+
+})
+}
+
+
+
+</script>
+<p id="showAddress"></p>
+<p id="showBalance"></p>
+<p id="showBlockNumber"></p>

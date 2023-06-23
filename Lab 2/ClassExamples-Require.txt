@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: None
+
+pragma solidity >=0.8.0 <0.8.17;
+
+contract firstSmartContract {
+
+uint  storedData;
+uint  i;
+address public owner;
+address public admin1;
+address public admin2;
+
+
+constructor() public {
+    owner = msg.sender;
+    admin1 = 0xdD870fA1b7C4700F2BD7f44238821C26f7392148;
+    admin2 = 0x583031D1113aD414F02576BD6afaBfb302140225;
+}
+
+function set(uint x) public {
+require(msg.sender==admin1 || msg.sender ==admin2);
+storedData = x;
+}
+
+
+function setForAll(uint x) public payable {
+require(msg.value>(1 * 10 ^ 18 wei));
+storedData = x;
+}
+
+function whileloop() public {
+    i=0;
+    while (i<=5) {
+        storedData = storedData +i;
+        i = i +1;
+    }
+}
+
+function changeAdmin(uint256 _admin, address _newAddress) public {
+    require(msg.sender ==owner);
+    if (_admin ==1) {
+        admin1 = _newAddress;
+    } else if (_admin==2) {
+        admin2 = _newAddress;
+    } else {}
+}
+
+
+
+function get() public view returns (uint) {
+return storedData;
+}
+
+function check() public view returns (string memory) {
+    string memory blabla;
+if (storedData>0) {
+    blabla = "Positive";
+} else {
+    blabla = "Zero";
+}
+return blabla;
+}
+
+function withdrawal() public payable{
+    require (msg.sender ==owner);
+    payable(msg.sender).transfer(address(this).balance);
+}
+
+}

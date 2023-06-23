@@ -1,0 +1,238 @@
+div {
+width: 100%
+}
+
+div.a {
+  font-size: 12px;
+  color: red;
+  font-weight: bold;
+}
+
+div.b {
+  font-size: large;
+}
+
+div.c {
+  font-size: 150%;
+}
+
+h1 {
+  color: rgb(44, 223, 20);
+  margin-left: 20px;
+}
+
+h2 {
+  color: red;
+  margin-left: 20px;
+}
+
+h4 {
+  color: navy;
+  margin-left: 20px;
+  font-size: 12px;
+}
+
+p {
+  color: black;
+  font-weight: bold;
+  text-align:left;
+}
+
+p.a {
+  
+  color: black;
+  font-size: 15px;
+  text-align:center;
+  width: 100%;
+}
+
+p.aa {
+  color: red;
+  font-size: 13px;
+  width: 100%;
+  border-style: solid;
+  border-color: lightgrey;
+  text-align:left;
+}
+
+label1.a {
+  color: black;
+  font-weight: bold;
+  text-align:left;
+}
+
+p.bb {
+background-color: lightgrey;
+  color: black;
+  font-size: 15px;
+  border-color: blue;
+  width: 100%
+}
+
+p.ee {
+background-color: lightgrey;
+  color: black;
+  font-size: 15px;
+  border-style: solid;
+  border-color: grey;
+  height: 40px;
+  width: 100%
+}
+
+p.dd {
+  background-color: lightgrey;
+  color: black;
+  font-size: 15px;
+  border-style: solid;
+  border-color: grey;
+  height: 40px;
+  width: 100%
+  
+  
+  
+}
+
+.w3-op {
+  color: black;
+  font-size: 13px;
+}
+
+footer {
+  color: navy;
+  font-size: 13px;
+  margin-left: 20px;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 13px 26px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  width: 150px;
+}
+
+
+
+
+
+
+.searchProject  {
+  background-color: white; 
+  color: black; 
+  border: 2px solid blue;
+}
+
+.searchProject:hover {
+  background-color: blue;
+  color: white;
+}
+
+.fundingtoproject{
+  background-color: white; 
+  color: black; 
+  border: 2px solid blue;
+}
+
+.fundingtoproject:hover {
+  background-color: blue;
+  color: white;
+}
+
+
+.registerProject {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #4CAF50;
+}
+
+.registerProject:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+
+.button2 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 13px 40px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  width: 180px;
+  height: 250px;
+  font-size: 30px;
+  
+}
+
+
+.button22 {
+  background-color: green; 
+  color: white; 
+  border: 2px solid #4CAF50;
+}
+
+.button22:hover {
+  background-color: white;
+  color: green;
+}
+
+.btn2 {
+  background-color: grey; /* Green */
+  border: none;
+  color: white;
+  padding: 13px 26px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  width: 150px;
+}
+
+.btn3 {
+  background-color: red; /* Green */
+  border: none;
+  color: white;
+  padding: 13px 26px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  width: 150px;
+}
+
+table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: left;    
+}
+
+.w3-input{padding:12px;display:block;border:none;border-bottom:1px solid #ccc;width:100%}
+
+.w3-border{border:1px solid #ccc!important}
+
+@media screen and (max-width: 600px) {
+  table,
+  th,
+  td
+}

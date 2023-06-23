@@ -1,0 +1,22 @@
+pragma solidity >=0.4.0 <0.6.0;
+contract SolidityTest {
+
+uint a;
+uint b;
+
+constructor(uint _a, uint _b) public{
+    a = _a;
+    b = _b;
+}
+
+function setValues(uint _a, uint _b) public {
+    a = _a;
+    b = _b;
+}
+
+function getResult() public view returns(uint){
+uint result = a + b;
+return result;
+}
+
+}

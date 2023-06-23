@@ -1,0 +1,96 @@
+// SPDX-License-Identifier: None
+
+pragma solidity >=0.6.0 <0.9.0;
+
+  /**
+   * @title Marketplace
+   * @dev Marketplace where sellers to list an item for sale and buyers can purchase the item
+  */
+
+contract marketplace {
+    
+    struct Items {
+        uint256 productID;
+        string productName;
+        address productOwner;
+    }
+
+    struct ItemsForSale {
+        uint256 forSaleID;
+        uint256 productID;
+        uint256 productPrice;
+        bool status; 
+    }
+
+    mapping(uint256 => Items) public items;
+    mapping(uint256 => ItemsForSale) public itemsforsale;
+    uint256 public productID_AI; //figo pou public (private)
+    uint256 public forSaleID_AI;
+
+
+    function addItem(string memory _productName) public {
+        //require(keccak256(abi.encodePacked('items[productName].productName')) == keccak256(abi.encodePacked(productName)), "Same name with other Item");
+        //if (keccak256(abi.encodePacked('items[productName].productName')) == keccak256(abi.encodePacked(productName))) {
+        //  return "Same name with other Item"; }
+        productID_AI++;
+        uint256 _productID = productID_AI;
+        Items memory newItems = Items(_productID, _productName, msg.sender);
+        items[_productID] = newItems;
+    }
+
+    function listItemForSale(uint256 _productID, uint256 _productPrice) public {
+        require(items[_productID].productOwner == msg.sender, "Item not exist or not belong");
+        require(itemsforsale[_productID].status == false, "Item already for sale");
+        forSaleID_AI++;
+        uint256 _forSaleID = forSaleID_AI;
+        ItemsForSale memory newItemsForSale = ItemsForSale(_forSaleID, _productID, _productPrice, true);
+        itemsforsale[_forSaleID] = newItemsForSale;
+    }
+
+    function buyItem(uint256 _forSaleID) public payable {
+        require(itemsforsale[_forSaleID].forSaleID == _forSaleID, "Item not exist");
+        require(itemsforsale[_forSaleID].status == true, "Item not for sale");
+        //require(msg.value == itemsforsale[_forSaleID].productPrice, "Wrong Amount");
+        uint256 _productID = itemsforsale[_forSaleID].productID;
+        address productOwner = items[_productID].productOwner;
+        payable(productOwner).transfer(itemsforsale[_forSaleID].productPrice);
+        productOwner = msg.sender;
+        itemsforsale[_forSaleID].status = false;
+    }
+
+    function deleteListItem(uint256 _forSaleID) public {
+        require(itemsforsale[_forSaleID].status == true);
+        uint256 temp;
+        for (uint256 i; i<= forSaleID_AI; i++){
+            if (_forSaleID == itemsforsale[i].forSaleID) {
+                temp=i;
+            }
+        }
+        delete itemsforsale[temp];
+       itemsforsale[_forSaleID].status = false;
+    }
+
+
+    function retrieveItem(uint256 _productID) public view returns (uint256, string memory, address) {
+        require(items[_productID].productID == _productID, "Item not exist");
+        uint256 temp;
+        for (uint i = 0; i <= productID_AI; i++) {
+            if (items[i].productID==_productID) {
+                temp=i;
+            }
+        }
+        return (items[temp].productID, items[temp].productName, items[temp].productOwner);
+    }
+
+    function retrieveItemForSale(uint _productID) public view returns(uint256, uint256, uint256, bool) {
+        require(itemsforsale[_productID].forSaleID == _productID, "Item not exist");
+        uint256 temp;
+        for (uint i = 0; i <= forSaleID_AI; i++) {
+            if (itemsforsale[i].productID==_productID) {
+                temp=i;
+            }
+        }
+        return (itemsforsale[temp].forSaleID, itemsforsale[temp].productID, itemsforsale[temp].productPrice, itemsforsale[temp].status);
+    }
+
+}

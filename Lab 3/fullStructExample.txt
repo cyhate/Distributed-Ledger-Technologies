@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: None
+
+pragma solidity >=0.8.0 <0.8.17;
+
+contract bookRecords {
+
+    struct Book {
+        string title;
+        string author;
+        uint256 book_id;
+    }
+
+    Book[] public book;
+
+    mapping(uint256 => bool) public registeredBook;
+
+    uint256[] size;
+
+    // SETTER FUNCTIONS
+
+    function setBook(string memory _title, string memory _author, uint256 _bookid) public {
+        require(registeredBook[_bookid] == false);
+        Book memory newBook = Book(_title, _author, _bookid);
+        book.push(newBook);
+        registeredBook[_bookid] = true;
+    }
+
+    function updateBook(uint256 _bookid, string memory _title, string memory _author) public {
+        require(registeredBook[_bookid] == true);
+        uint256 temp;
+        for (uint256 i; i<= book.length -1; i++){
+            if (_bookid == book[i].book_id) {
+                temp=i;
+            }
+        }
+        book[temp].title = _title;
+        book[temp].author = _author;
+    }
+
+    function deleteBook(uint256 _bookid) public {
+        require(registeredBook[_bookid] == true);
+        uint256 temp;
+        for (uint256 i; i<= book.length -1; i++){
+            if (_bookid == book[i].book_id) {
+                temp=i;
+            }
+        }
+        delete book[temp];
+        registeredBook[_bookid] = false;
+    }
+
+
+
+    // GETTER FUNCTIONS
+
+    function readAllBooks() public view returns(Book[] memory){
+        return (book);
+    }
+
+    function readUniqueBook(uint256 _bookid) public view returns (string memory, string memory,uint256){
+        uint256 temp;
+        for (uint256 i; i<= book.length -1; i++){
+            if (_bookid == book[i].book_id) {
+                temp=i;
+            }
+        }
+        return (book[temp].title, book[temp].author, book[temp].book_id);
+    }
+
+}

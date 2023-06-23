@@ -1,0 +1,409 @@
+
+<script src="./js/web3.js"></script>
+<script>
+window.addEventListener('load', async () => {
+    // Modern dapp browsers...
+    if (window.ethereum) {
+        window.web3 = new Web3(web3.currentProvider);
+        try {
+            // Request account access if needed
+            await ethereum.enable();
+            // Acccounts now exposed
+		
+         checkMetamaskLogin(); // check if login with metamask
+		 startApp(web3);
+        } catch (error) {
+            // User denied account access...
+        }
+    }
+    // Non-dapp browsers...
+    else {
+        alert("In order to use the dApp\nPlease Install Metamask")
+        // 
+    }
+});
+
+
+// check if logged into metamask
+
+function checkMetamaskLogin () {
+
+   web3.eth.getAccounts(function(err, accounts) { address = accounts.toString(); 
+
+   if (address.length ===0) {
+    // MetaMask is locked or the user has not connected any accounts
+    alert('Please connect to MetaMask.')
+    } else {
+    
+	web3.eth.getAccounts(function(err, accounts) { console.log(accounts); address = accounts.toString(); });
+	document.getElementById("showAddress").innerHTML = address;
+    
+}	
+
+})
+
+}
+
+// Read Word dApp starts here
+
+// Contract ABI
+
+const abiContract = [
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "funding",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_projectTitlte",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_projectDescription",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_projectFundingAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "registerProject",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_projectIDindex",
+				"type": "uint256"
+			}
+		],
+		"name": "searchProject",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "_projectID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_projectTitlte",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_projectDescription",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_projectFundingAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_projectOwner",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_projectFunding",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+// End Contract ABI
+
+// MAIN FUNCTIONS
+
+function startApp(web3) {
+registerProject(web3);
+searchProject(web3);
+funding(web3);
+viewProject(web3);
+
+}
+
+// GLOBAL VARIABLES
+
+var gaspricereal;
+
+//register function
+
+function registerProject (web3) {
+// set button
+var button = document.querySelector('button.registerProject')
+button.addEventListener('click', function() {
+
+// get input from textbox
+
+var conAddress = document.getElementById("contractAddress").value; 
+var projectTitle = document.getElementById("projectTitle").value; 
+var projectDescription = document.getElementById("projectDescription").value; 
+var projectFoundingAmount =document.getElementById("projectFundingAmount").value * Math.pow(10, 18) ; 
+
+web3.eth.getGasPrice().then(gasPrice => {
+   console.log('gaspricereal = ' + gasPrice);
+   gaspricereal = gasPrice;
+   console.log(gaspricereal)
+});
+
+// contract interaction  
+  
+const contract_address = conAddress;
+
+var myContractInstance = new web3.eth.Contract(abiContract, contract_address);
+
+// method
+    
+const encodedABI = myContractInstance.methods.registerProject(projectTitle,projectDescription,projectFoundingAmount).encodeABI() 
+
+// get gas price realtime
+
+web3.eth.getGasPrice().then(gasPrice => {
+   console.log('gaspricereal = ' + gasPrice);
+   gaspricereal = gasPrice;
+   console.log(gaspricereal)
+});
+
+// send Transaction
+
+web3.eth.sendTransaction(
+{
+    from: address,
+    to: contract_address,
+    gas: 200000,
+    gasPrice: gaspricereal, // can use gaspricereal to get price directly but it may be really slow same time
+    value: web3.utils.toWei('0','ether'),
+    data: encodedABI // or data: encodedABI
+  }, function(error, result){
+	
+  document.getElementById("tHash").innerHTML = "Transaction Hash " + result
+  document.getElementById("tUrl").innerHTML = '<a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank">View Transaction</a>';
+  document.getElementById("tStatus").innerHTML = "Pending...";
+  
+}) .on('confirmation', function(confirmationNumber, receipt){
+    console.log('confirmation: ' + confirmationNumber);
+      if (confirmationNumber>=1) {
+      document.getElementById("tStatus").innerHTML = "Success";
+      }
+      else {
+      document.getElementById("tStatus").innerHTML = "Checking Transaction";
+      }
+})
+});
+  
+
+}
+
+
+// searchProject
+
+function searchProject (web3) {
+// set button
+var button = document.querySelector('button.searchProject')
+button.addEventListener('click', function() {
+
+var conAddress = document.getElementById("contractAddress").value; 
+var searchID = document.getElementById("searchProject").value; 
+
+const contract_address = conAddress;
+
+var myContractInstance = new web3.eth.Contract(abiContract, contract_address);
+
+// call readWord function
+
+
+myContractInstance.methods.searchProject(searchID).call({from: address}, function(error, result){
+//console.log(result);
+
+document.getElementById("printProjectID").innerHTML =  result[0];
+document.getElementById("printProjectTitle").innerHTML =  result[1];
+document.getElementById("printProjectDescription").innerHTML =  result[2];
+document.getElementById("printFundingAmount").innerHTML =  result[3]/Math.pow(10, 18);
+document.getElementById("printprojectOwner").innerHTML =  result[4];
+document.getElementById("printFunding").innerHTML =  result[5]/Math.pow(10, 18);
+    
+});
+
+ })
+}
+
+// viewProject
+
+function viewProject (web3) {
+// set button
+var button = document.querySelector('button.viewProject')
+button.addEventListener('click', function() {
+
+
+
+ })
+}
+
+// Change Word function
+
+function funding (web3) {
+// set button
+var button = document.querySelector('button.fundingtoproject')
+button.addEventListener('click', function() {
+
+// get input from textbox
+
+var conAddress = document.getElementById("contractAddress").value; 
+var FundingProjectId = document.getElementById("FundingProjectID").value; 
+var DonationAmount = document.getElementById("DonationAmount").value; 
+
+
+
+
+// contract interaction  
+  
+const contract_address = conAddress;
+
+var myContractInstance = new web3.eth.Contract(abiContract, contract_address);
+
+// method
+    
+const encodedABI = myContractInstance.methods.funding(FundingProjectId).encodeABI() 
+
+// get gas price realtime
+
+web3.eth.getGasPrice().then(gasPrice => {
+   console.log('gaspricereal = ' + gasPrice);
+   gaspricereal = gasPrice;
+   console.log(gaspricereal)
+});
+
+// send Transaction
+
+web3.eth.sendTransaction(
+{
+    from: address,
+    to: contract_address,
+    gas: 2000000,
+    gasPrice: gaspricereal, // can use gaspricereal to get price directly but it may be really slow same time
+    value: web3.utils.toWei(DonationAmount,'ether'),
+    data: encodedABI // or data: encodedABI
+  }, function(error, result){
+  document.getElementById("tHash").innerHTML = "Transaction Hash " + result
+  document.getElementById("tUrl").innerHTML = '<a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank">View Transaction</a>';
+  document.getElementById("tStatus").innerHTML = "Pending...";
+  
+}) .on('confirmation', function(confirmationNumber, receipt){
+    console.log('confirmation: ' + confirmationNumber);
+      if (confirmationNumber>=1) {
+      document.getElementById("tStatus").innerHTML = "Success";
+      }
+      else {
+      document.getElementById("tStatus").innerHTML = "Checking Transaction";
+      }
+})
+});
+  
+
+}
+
+
+
+    
+</script>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="font-family:Verdana;color:#c70e0e;">
+<div style="background-color:#f5f4f0;padding:15px;text-align:center;">
+<h1 style="color:rgb(255, 255, 255); font-family: Copperplate, Papyrus, fantasy; background-color: blue;">DApp</h1>
+<p>Your address :</p>
+<p id="showAddress" class="b" style=" color: rgb(0, 0, 0);"></p>
+
+<p class="dd">Smart Contract Address</p> 
+<p><input type="text" id="contractAddress" value="0x290FC42Y12DA8AC1a2F6211e3Be94E1D6cb4dCE6" size="72" class="dd" autocomplete="off" autofill="off" readonly>
+ <!-- smart contract address -->
+
+<p class="dd">Search Project</p>
+<input type="text" id="searchProject" placeholder="Search Project (by ID)" size="72" class="w3-input w3-border" autocomplete="off">
+<button class="button searchProject">Search</button>
+<body style="font-family:Verdana;color:#c70e0e;">
+<div style="background-color:#f5f4f0;padding:15px;text-align:left;">
+
+	<p>
+		<label1 for="printProjectID" class="a">Project ID: </label>	
+		<output id="printProjectID" class="a" ></output>
+	</p>
+	<p>
+		<label2 for="printProjectTitle" class="a">Project Title: </label>	
+		<output id="printProjectTitle" class="a" ></output>
+	</p>
+	<p>
+		<label3 for="printProjectDescription" class="a">Description: </label>	
+		<output id="printProjectDescription" class="a" ></output>
+	</p>
+	<p>
+		<label4 for="printFundingAmount" class="a">Funding Goal (ether): </label>	
+		<output id="printFundingAmount" class="a" ></output>
+	</p>
+	<p>
+		<label5 for="printprojectOwner" class="a">Project Owner: </label>	
+		<output id="printprojectOwner" class="a" ></output>
+	</p>
+	<p>
+		<label6 for="printFunding" class="a">Current Funding Amount (ether): </label>	
+		<output id="printFunding" class="a" ></output>
+	</p>
+
+
+<body style="font-family:Verdana;color:#c70e0e;">
+<div style="background-color:#f5f4f0;padding:15px;text-align:center;">
+<p class="dd">Funding</p>
+<p><input type="text" id="DonationAmount" placeholder="Amount (ether)" size="72" class="w3-input w3-border" autocomplete="off">
+<p><input type="text" id="FundingProjectID" placeholder="Project ID" size="72" class="w3-input w3-border" autocomplete="off">
+<button class="fundingtoproject button">Fund</button>
+
+<p class="dd">Add Project</p>
+<p><input type="text" id="projectTitle" placeholder="Project Title" size="72" class="w3-input w3-border" autocomplete="off">
+<p><input type="text" id="projectDescription" placeholder="Project Description" size="72" class="w3-input w3-border" autocomplete="off">
+<p><input type="text" id="projectFundingAmount" placeholder="Project Funding Amount (ether)" size="72" class="w3-input w3-border" autocomplete="off">
+
+<div class="dd" style="color:black; text-align:right ;">Gas price is calculated in realtime</div><br>
+<p id="tHash" class="a"></p>
+<p id="tUrl" class="a"></p>
+<p id="tStatus" class="a"></p>
+<button class="registerProject button">Register Project</button>
+<p id="footer" style="color: rgb(0, 0, 0);font-size:12px; font-family: Courier New, Courier, monospace; ">&copy; All Rights Reserved </p>
+</div>
+</body>
+</html>
